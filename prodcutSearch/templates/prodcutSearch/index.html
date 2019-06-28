@@ -1,0 +1,234 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% block content %}
+    {% load static %}
+<div class="container" id="main-content">
+            <div class="row">
+                <div class="col col-lg-12">
+                    <div class="filter">
+                    <div class="left-filter">
+                        <div class="filter-text">
+                        <h2>Find a Phone</h2>
+
+                    <h5 class="mt-3">That You'd Love To Have.</h5>
+                </div>
+                        <div class="slide-content">
+                    <div class="slidecontainer">
+                        <form name="slider_value" method="get" action="{% url 'range_result' %}">
+   <input type="range" min="3000" max="50000" value="3000" class="slider" id="myRange" name="filter_value">
+
+                            <span class="slider-text">Around ₹ <span id="demo"></span></span>
+                            <a class="btn btn-primary" id="find-phone-button" type="submit">Find</a>
+                       </form>
+                        </div>
+                        </div>
+
+                </div>
+                        <div class="right-filter">
+                            <div class="circle-content">
+                                <i class="circle"><img  src="{% static 'images/circle-image/explore.png' %}"></i>
+                                <a href="#"><img id="image-1" src="{% static 'images/circle-image/4g.png' %}"></a>
+                                <a href="#"><img id="image-2" src="{% static 'images/circle-image/3g.png' %}" alt=""/></a>
+                             <a href="#"> <img id="image-3" src="{% static 'images/circle-image/4gram.png' %}" alt=""/></a>
+                               <a href="#"> <img id="image-4" src="{% static 'images/circle-image/android.png' %}" alt=""/></a>
+                               <a href="#">  <img id="image-5" src="{% static 'images/circle-image/dualcamera.png' %}" alt=""/></a>
+                                <a href="#">  <img id="image-6" src="{% static 'images/circle-image/latestphone.png' %}" alt=""/></a>
+                                <a href="#">  <img id="image-7" src="{% static 'images/circle-image/selfie.png' %}" alt=""/></a>
+                                <a href="#">  <img id="image-8" src="{% static 'images/circle-image/volte.png' %}" alt=""/></a>
+                            </div>
+                        </div>
+                </div>
+                </div>
+            </div>
+</div>
+
+    <div class="container-fluid" id="phone_shortcut">
+    <div class="row">
+    <div class="col col-lg-12">
+    <div class="phone_shortcut">
+   <div class="row">
+   <div class="phone_shortcut_container">
+            {% for p_type in phone_type %}
+
+           <div class="phone_type col-xs-6"><a href="{% url 'range_res'  range_val='10000' %}" ><img class="img-responsive img-fluid" src={{ p_type.image.url }}>
+                <div class="blur"><p>{{ p_type.title }}</p></div></a></div>
+            {% endfor %}
+   </div>
+   </div>
+
+    </div>
+    </div>
+</div>
+    </div>
+  <div class="container">
+      <div class="row" id="main_content">
+          <div class="col col-lg-12">
+    <main>
+  <div class="scrolling-wrapper">
+      {% for new in new_phone %}
+    <div class="card">
+       <img class="img-responsive thumbnail" src="{{ new.image.url }}">
+        <div class="content">
+            <h4>NEW</h4>
+            <h4>{{ new.name }}</h4>
+            <p>{{ new.text }}</p>
+            <a href="{% url 'index_phone' name=new.name %}"><p class="font-weight-bold">SEE DETAILS</p></a>
+        </div>
+    </div>
+      {% endfor %}
+  </div>
+</main>
+<div class="row" id="phone_list">
+          <div class="col-lg-6 col-sm-12 col-md-12 col-xs-12">
+
+          <div class="top_rated_phone">
+           <h6><i class="fa fa-star" aria-hidden="true">Top 5 Phones</i></h6>
+              <ul>
+              {% for top in top_phone %}
+                 <li class="items">
+                 <a href="{% url 'index_phone' name=top.name %}">
+                     <span class="id">
+                         <span class="phone_id" style="color:#bebebe;">{{ forloop.counter}}</span></span>
+                     <span class="img">
+                        <span class="phone_img"> <img class='img-responsive' src="{{ top.image.url }}"></span>
+                     </span>
+                     <span class="name">
+                         <span class="phone_name">{{ top.name }}</span>
+                     </span>
+                     <span class="price">
+                        <span class="phone_price"> {{ top.price }}</span>
+                     </span>
+                 </a>
+                 </li>
+              {% endfor %}
+          </ul>
+          </div>
+          </div>
+<div class="col-lg-6 col-sm-12 col-md-12 col-xs-12">
+
+<div class="popular_phone">
+    <h6><i class="fa fa-fire" aria-hidden="true">Popular Phones</i></h6>
+<ul>
+    {% for popular in popular_phone %}
+        <li class="items">
+                <a href="{% url 'index_phone' name=popular.title %}">
+                     <span class="id">
+                         <span class="phone_id" style="color: #bebebe;">{{ forloop.counter }}</span></span>
+                     <span class="img">
+                        <span class="phone_image"> <img class='img-responsive' src="{{ popular.image.url }}"></span>
+                     </span>
+                     <span class="name">
+                         <span class="phone_title">{{ popular.title }}</span>
+                     </span>
+                     <span class="price">
+                        <span class="phone_price"> {{ popular.price }}</span>
+                     </span>
+                 </a>
+                 </li>
+    {% endfor %}
+</ul>
+</div>
+</div>
+    </div>
+          <!--Flagship content start here-->
+      <div class="main_flagship_phone">
+      <span><h4><i class="fa fa-heart" aria-hidden="true"></i>FLAGSHIP PHONES</h4></span>
+          {% for flag in flagship_phone %}
+          {% if forloop.counter == 1 %}
+          <div class="row">
+              <div class="col-lg-6 col-md-12 col-sm-12" id="left_col">
+                  <div class="row" id="left_row">
+                      <div class="col-lg-6 col-md-6">
+                         <a href="{% url 'index_phone' name=flag.brand|add:' '|add:flag.model  %}"> <div id="child_flagship_phone">
+                              <img class="img-responsive img-fluid" src="{{ flag.image.url }}">
+                              <div class="child_flagship_phone_content">
+                             <span> <h4>{{ flag.brand }}</h4>
+                                  <h5>{{ flag.model }}</h5>
+                                  <p>{{ flag.price }}</p></span>
+                              </div>
+                         </div></a>
+                      </div>
+                      {% elif forloop.counter == 2 %}
+                      <div class="col-lg-6 col-md-6">
+                         <a href="{% url 'index_phone' name=flag.brand|add:' '|add:flag.model  %}">  <div id="child_flagship_phone">
+                              <img class="img-responsive img-fluid" src="{{ flag.image.url }}">
+                              <div class="child_flagship_phone_content">
+                              <span><h4>{{ flag.brand }}</h4>
+                                  <h5>{{ flag.model }}</h5>
+                                  <p>{{ flag.price }}</p></span>
+                              </div>
+                         </div>
+                         </a>
+                      </div>
+                     {% elif forloop.counter == 3 %}
+                      <div class="col-lg-12">
+                          <a href="{% url 'index_phone' name=flag.brand|add:' '|add:flag.model  %}"> <div id="child_flagship_phone">
+                              <img class="img-responsive" src="{{ flag.image.url }}">
+                              <div class="child_flagship_phone_content">
+                              <span><h2>{{ flag.brand }}</h2>
+                                  <h3>{{ flag.model }}</h3>
+                                  <p>{{ flag.price }}</p></span>
+                              </div>
+                          </div></a>
+                      </div></div></div>
+              {% elif forloop.counter == 4 %}
+             <div class="col-lg-6 col-md-12" id="right_col"><a href="{% url 'index_phone' name=flag.brand|add:' '|add:flag.model  %}"> <div id="child_flagship_phone">
+                              <img class="img-responsive" src="{{ flag.image.url }}">
+                              <div class="child_flagship_phone_content">
+                              <span><h1>{{ flag.brand }}</h1>
+                                  <h2>{{ flag.model }}</h2>
+                                  <p>{{ flag.price }}</p></span>
+                              </div>
+             </div></a></div></div>
+
+{% endif %}
+      {% endfor %}
+      </div>
+          <div class="smart_phone_compare_container mt-2">
+          <span><h5 class="mb-3 mt-3"><i class="fa fa-crown" aria-hidden="true"></i>smartphone compare</h5></span>
+          <div class="smart_phone_compare">
+              {% for item in smart_compare %}
+                  <a href="{% url 'index-compare' value=item.name1|add:'-'|add:item.name2 %}">
+                  <div class="card">
+                      <div class="smart_table">
+
+                <div class="smart_table_image">
+                    <span><img class="img-responsive img-fluid" src="/media/{{ item.image1 }}">
+                      <span class="vs">vs</span>
+                    <img class="img-responsive img-fluid" src="/media/{{ item.image2 }}"></span>
+                </div>
+
+                      <div class="smart_table_content">
+                          <p>{{ item.name1 }}</p>
+                          <h6>vs</h6>
+                          <p>{{ item.name2 }}</p>
+                      </div>
+                      </div>
+                  </div>
+                  </a>
+              {% endfor %}
+          </div>
+
+      </div>
+          </div>
+          </div>
+          </div>
+      </div>
+    <script type="text/javascript">
+    $(document).ready(function()
+        {
+        $('.card:nth-child(2n-1) .content').css('background','linear-gradient(rgba(160, 160, 160, 0.6),rgba(160,160,160,0.4))');
+        $('.card:nth-child(2n) .content').css('background','linear-gradient(rgba(255, 0, 0, 0.6),rgba(255,0,0,0.4))');
+        $('#right_col #child_flagship_phone:nth-child(n)').css('height','480px');
+        $('#right_col #child_flagship_phone:nth-child(n) .child_flagship_phone_content').css('height','480px');
+        $('#right_col #child_flagship_phone:nth-child(n) img').css('height','480px');
+        });
+
+    </script>
+    <script>
+    $("a#find-phone-button").click(function(event){
+   event.preventDefault();
+   $('form').submit();
+})
+    </script>
+
+     {% endblock content %}

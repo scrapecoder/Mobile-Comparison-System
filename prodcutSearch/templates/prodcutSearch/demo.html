@@ -1,0 +1,235 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% block content %}
+{% if compare %}
+<div class="container" id="phone_table section">
+<div class="row">
+<div class="col col-lg-12">
+
+<div class="table mt-5">
+<div class="sticky-top" id="sticky-top">
+              <div class="compare_model_image" id="sticky-scroll">
+                  {% for tag in brand_name %}
+
+                      {% if tag == 'redmi note 4' or tag == 'redmi note 5' %}
+                          {% with 'xiaomi '|add:tag as tag %}
+                              <div class="brand_image" id="brand_image"> <img class="img-responsive sticky_image" id="sticky_image" src="/media/phone_search_image/{{ tag }}.jpg">
+                     <span><p>{{ tag }}</p></span></div>
+                          {% endwith %}
+                      {% else %}
+                     <div class="brand_image" id="brand_image"> <img class="img-responsive sticky_image" id="sticky_image" src="/media/phone_search_image/{{ tag }}.jpg">
+                     <span><p>{{ tag }}</p></span></div>
+{% endif %}
+                      {% endfor %}
+              </div>
+          </div>
+
+
+<div class="row">
+
+<div class="col-lg-12">
+    {% if brand_name|length <= 2 %}
+    <canvas id="radar-chart" width="400" height="400"></canvas>
+    {% endif %}
+    </div>
+</div>
+     {% for key, value in compare.items %}
+         <div class="main_row_section">
+         <div class="row_wrapper">
+         <h5>{{ key }}</h5>
+
+         {% for sub1_key, sub1_value in value.items %}
+                {% if not sub1_value.items %}
+                    <h6></h6>
+
+
+                    <div class="table_wrapper">
+
+
+
+                       <div class="wrapper_content">
+          <div class="wrapper_content_head">
+{{ sub1_key }}
+          </div>
+
+                           {% for value in sub1_value %}
+                            <div class="wrapper_content_value">
+                 {{ value }}
+                 </div>
+                           {% endfor %}
+
+
+
+</div>
+
+                    </div>
+
+          {% else %}
+
+              <h6>{{ sub1_key }}</h6>
+          <div class="table_wrapper">
+
+
+         {% for sub2_key, sub2_value in sub1_value.items %}
+          <div class="wrapper_content">
+          <div class="wrapper_content_head">
+              {{ sub2_key }}
+          </div>
+
+
+             {% for value in sub2_value %}
+                 <div class="wrapper_content_value">
+                 {{ value }}
+                 </div>
+
+                 {% endfor %}
+</div>
+
+
+             {% endfor %}
+          </div>
+
+{% endif %}
+         {% endfor %}
+
+</div>
+        </div>
+
+    {% endfor %}
+
+    </div>
+    </div>
+</div>
+</div>
+{% endif %}
+    <script>
+document.getElementById('main-device-list').style.display = 'none';
+
+$(document).ready(function() {
+    $('.compare_model_image:nth-child(1) #brand_image').css('border-right', '2px solid red');
+    $('.compare_model_image:nth-child(2) #brand_image').css('border-right', '2px solid black');
+    $('.compare_model_image:nth-child(3) #brand_image').css('border-right', '2px solid green');
+    $('.compare_model_image:nth-child(4) #brand_image').css('border-right', '2px solid blue');
+    $('.compare_model_image:nth-child(5) #brand_image').css('border-right', '2px solid orange');
+    $('#brand_image:last-child').css('border', 'none');
+});
+
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
+    document.getElementById("sticky-scroll").style.fontSize = "5px";
+    document.getElementById("sticky-scroll").style.height= "85px";
+    var y = document.getElementById("sticky-scroll").querySelectorAll("#brand_image");
+    for(var i=0;i<y.length;i++) {
+        y[i].style.height = "60px";
+
+    }
+
+    var x = document.getElementById("sticky-scroll").querySelectorAll(".sticky_image");
+    for(var i=0;i<x.length;i++) {
+        x[i].style.height = "50px";
+
+    }
+    document.getElementById("sticky-scroll").style.background = 'white';
+
+  } else {
+    document.getElementById("sticky-scroll").style.fontSize = "15px";
+    document.getElementById("sticky-scroll").style.height= "170px";
+    var x = document.getElementById("sticky-scroll").querySelectorAll(".sticky_image");
+    var y = document.getElementById("sticky-scroll").querySelectorAll("#brand_image");
+    for(var i=0;i<y.length;i++) {
+        y[i].style.height = "130px";
+
+    }
+    for(var i=0;i<x.length;i++) {
+        x[i].style.height = "120px"
+
+    }
+  }
+}
+</script>
+    <script>
+    Chart.plugins.register({
+	afterDraw: function(chart) {
+  	if (chart.data.datasets.length === 0) {
+    	// No data is present
+      var ctx = chart.chart.ctx;
+      var width = chart.chart.width;
+      var height = chart.chart.height;
+      chart.clear();
+
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = "16px normal 'Helvetica Nueue'";
+      ctx.fillText('No data to display', width / 2, height / 2);
+      ctx.restore();
+    }
+  }
+});
+    var ctx = document.getElementById('radar-chart');
+    var arr = {{ rating }};
+    var lab = '{{ brand_name }}';
+    console.log(lab);
+    Chart.defaults.global.defaultFontColor = '#000';
+    new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ["Design", "Performance", "Camera", "Connectivity", "Battery"],
+      datasets: [
+        {
+          label: "{{ brand_name.0 }}",
+          fill: true,
+          backgroundColor: "rgba(179,181,198,0.4)",
+          borderColor: "rgba(179,181,198,1)",
+          pointBorderColor: "#fff",
+          pointBackgroundColor: "rgba(179,181,198,1)",
+          data: arr[0].map(parseFloat)
+        },
+          {
+          label: "{{ brand_name.1 }}",
+          fill: true,
+          backgroundColor: "rgba(255,99,132,0.4)",
+          borderColor: "rgba(255,99,132,1)",
+          pointBorderColor: "#fff",
+          pointBackgroundColor: "rgba(255,99,132,1)",
+          pointBorderColor: "#fff",
+          data:  arr[1].map(parseFloat)
+        }
+      ]
+    },
+   options: {
+        responsive: true,
+    maintainAspectRatio: false,
+        responsiveAnimationDuration: 2
+
+    },
+    scale:
+        {
+            yAxis: [{
+                ticks: {
+                max: 10,
+                min: 0,
+                stepSize: 2
+          }
+            }]
+        },
+    legend:
+        {
+            labels:{
+                color: '#000'
+            }
+
+        },
+    layout:{
+        height: 200,
+        padding:{
+            left: 50,
+            right: 0,
+            bottom: 0,
+            top: 0
+        }
+    }
+});
+    </script>
+{% endblock %}

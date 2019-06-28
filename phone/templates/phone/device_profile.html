@@ -1,0 +1,250 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% block content %}
+    <div class="container">
+    <div class="d-flex flex-row-reverse bg-info mt-5">
+  <div class="p-2"><button class="btn btn-danger" onclick="openComNav()">Compare</button></div>
+  </div>
+    </div>
+    <div id="ComparemySidenav" class="Comparesidenav">
+     <div class="compare_val"> <input type="text" id="txtVal" placeholder="write to add">
+         <button onclick="addLi()" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+
+     </div>
+           <ul id="list">
+           <li id="list_val">{{ Brand }}<span class="remove"><a href="#" onclick="removeRecord(0)"><i class="fa fa-trash"></i></a></span></li>
+        </ul>
+        <button id="Com_action" class="btn ml-3" onclick="ComAction()">Compare</button>
+          <div id="load" style="display: none"> <span class="loading">
+        <span></span>
+        <span></span>
+       <span></span>
+       <span></span>
+      </span>
+       </div>
+  <a href="javascript:void(0)" class="closebtn" onclick="closeComNav()">&times;</a>
+</div>
+ {% if final %}
+     <div class="container" id="phone_table">
+     <div class="rate_wrapper" style="display: flex;">
+
+
+        <img class="img-responsive" src="{{ full_path }}">
+     <div id="rating" style="height: 250px; width: 100%; position: relative;">
+
+         <canvas id="myChart">
+
+         </canvas>
+
+     </div>
+     </div>
+     <div class="mt-5 mb-5 text-center"><h1 class="text-primary font-weight-bold">{{ Brand }}: Specs and price</h1></div>
+
+         <div class="table">
+         {% for key, value in final.items %}
+             {% if key == 'Photos' or key == 'Videos' or key == 'Related' %}
+
+             {% else %}
+             <div class="row-section mt-5">
+         <div class="left_row_section">
+         <h6>{{ key }}</h6>
+         </div>
+         <div class="right_row_section">
+         <dl>
+         {% for sub_key, sub_value in value.items %}
+             {% if sub_key == 'Origami' %}
+
+                 {% else %}
+             <dt>{{ sub_key }}</dt>
+             <dd>{{ sub_value }}</dd>
+{% endif %}
+         {% endfor %}
+         </dl>
+         </div>
+         </div>
+             {% endif %}
+     {% endfor %}
+     </div>
+{% endif %}
+
+
+<script>
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var arr = {{ rating }};
+
+var ints= arr.map(parseFloat);
+
+//Chart.defaults.global.defaultFontColor = '#000';
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Overall Rating', 'Design & Screen', 'Hardware & Performance', 'Camera', 'Connectivity', 'Battery'],
+        datasets: [{
+            label: 'Rating of Users',
+
+            data: ints,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)',
+                'rgba(75, 192, 192, 0.5)',
+                'rgba(153, 102, 255, 0.5)',
+                'rgba(255, 159, 64, 0.5)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1,
+            hoverBackgroundColor: [
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(153, 102, 255, 0.8)',
+                'rgba(255, 159, 64, 0.8)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+    maintainAspectRatio: false,
+        responsiveAnimationDuration: 2,
+
+        scales: {
+    yAxes: [{
+
+          ticks: {
+                max: 10,
+                min: 0,
+                stepSize: 2
+          }
+    }],
+
+}
+
+    },
+    legend:
+        {
+            labels:{
+                color: '#000'
+            }
+
+        },
+    layout:{
+        height: 200,
+        padding:{
+            left: 50,
+            right: 0,
+            bottom: 0,
+            top: 0
+        }
+    }
+});
+</script>
+
+
+    <script type="text/javascript">
+$(function(){
+    $('#btn_add').click(function(){
+
+       $('#txtVal').value="";
+    });
+});
+</script>
+    <script>
+function openComNav() {
+  document.getElementById("ComparemySidenav").style.width = "400px";
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+function closeComNav() {
+  document.getElementById("ComparemySidenav").style.width = "0";
+  document.body.style.backgroundColor = "white";
+}
+</script>
+    <script>
+    // Standard django function to get csrf_token. More info:
+    // https://docs.djangoproject.com/en/2.2/ref/csrf/#acquiring-the-token-if-csrf-use-sessions-and-csrf-cookie-httponly-are-false
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var val = document.getElementById('list_val').innerText;
+    let brands = [];
+    brands.push(val);
+
+    function addLi() {
+        let txtVal = document.getElementById('txtVal').value;
+
+        if(txtVal){
+        brands.push(txtVal);
+        for (var i = 0; i < brands.length; i++) {
+            var add = "<li id='list_val'>" + brands[i] + "<span class='remove'><a href='#' onClick='removeRecord(" + i + ");'><i class='fa fa-trash'></a></span>" + "</li>";
+         };
+    document.getElementById('list').innerHTML += add;
+    document.getElementById('txtVal').value = "";
+    }}
+    function removeRecord(i) {
+    brands.splice(i, 1);
+    var remove = "";
+    // re-display the records from foodList the same way we did it in addToFood()
+    for (var i = 0; i < brands.length; i++) {
+        remove += "<li id='list_val'>"+brands[i] +"<span class='remove'><a href='#' onClick='removeRecord(" + i + ");'><i class='fa fa-trash'></a></span>"+"</li>";
+    };
+    document.getElementById('list').innerHTML = remove;
+}
+
+
+    function ComAction() {
+        var beforeSend = function(){
+           $('#load').show();
+            $('#Com_action').hide();
+        };
+
+        beforeSend();
+
+        let xhr = new XMLHttpRequest(),
+            data = new FormData();
+
+        data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+
+        brands.forEach(function (brand) {
+            data.append('brand', brand);
+        });
+
+        xhr.open('POST', 'index/compare_in/', true);
+
+                 xhr.onload = function () {
+            if (xhr.status === 200) {
+                //var demo = xhr.base64.encode(JSON.stringify(data));
+                //console.log('http://127.0.0.1:8000/demo/'+demo);
+                window.location.replace('http://127.0.0.1:8000/demo/');
+            } else if (xhr.status !== 200) {
+                alert('Request failed.');
+                document.getElementById('load').style.display =  none;
+            }
+        };
+      xhr.send(data);
+    }
+</script>
+
+{% endblock %}

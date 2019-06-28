@@ -1,0 +1,16 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% block content %}
+    <div class="container mt-5">
+    <div class="row">
+        <div class="col col-lg-3"></div>
+        <div class="col col-lg-6">
+           <div class="border-top mt-2">
+         <p>you have been logout successfully!
+            <a href="{% url 'login' %}" class="ml-2">Login Again</a></p>
+        </div>
+        </div>
+        <div class="col col-lg-3"></div>
+    </div>
+    </div>
+
+{% endblock content %}

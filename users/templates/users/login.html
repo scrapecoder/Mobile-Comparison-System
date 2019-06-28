@@ -1,0 +1,29 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section container mt-5">
+<div class="row">
+    <div class="col-lg-3 col-md-1"></div>
+    <div class='col col-lg-6 col-md-10 col-sm-12 col-xs-12'>
+     <form method="post">
+         {% csrf_token %}
+         <fieldset class="form-group">
+             <legend class="border-bottom mb-3 form_color">Log In</legend>
+             {{ form|crispy }}
+         </fieldset>
+         <div class="form-group form_color">
+             <button class="btn btn-primary" type="submit">LogIn</button>
+             <small class="text-muted" style="display: inline-block">
+                 <a href="{% url 'password_reset' %}">Forget password</a>
+             </small>
+         </div>
+     </form>
+     <div class="border-top mb-2">
+         <p class="form_color" style="color: #000000">Need An Account?
+         <a href="{% url 'register' %}" class="ml-2">Register</a></p>
+     </div>
+    </div>
+    <div class="col-lg-3 col-md-1"></div>
+</div>
+ </div>
+{% endblock content %}

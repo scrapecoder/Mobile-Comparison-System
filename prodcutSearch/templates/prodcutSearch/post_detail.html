@@ -1,0 +1,130 @@
+{% extends 'prodcutSearch/base_index.html' %}
+{% block content %}
+        <br xmlns:300px xmlns:300px xmlns:300px/>
+        <div class="container blog mt-4">
+
+        <div class="row col-lg-2"></div>
+        <div class="row">
+    <div class="card center-block" style="width: 100%;">
+  <div class="card-body">
+    <h3 class="card-title mb-3">{{ post.title }}</h3>
+
+     <small> <p class="text-black-50 font-weight-bold">Published by: {{ post.author }} on {{ post.data_posted|date:"F d, Y" }} and got {{ total_likes }} like{{ total_likes|pluralize }}</p></small>
+      {% if post.author == user %}
+          <div class="wrapper_content">
+          <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'post-update' post.id %}">Update</a>
+          <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id %}">Delete</a>
+          </div>
+      {% endif %}
+      <img class="img-responsive img-fluid mb-1" src={{ post.image.url }}>
+    <p class="card-text">{{ post.content }}</p>
+  </div>
+    </div>
+        <div id="like_section">
+            {% include 'prodcutSearch/like_section.html' %}
+        </div>
+    </div>
+        <div class="row col-lg-2"></div>
+
+
+</div>
+    <br><br>
+    <hr>
+    <div class="container">
+    <div class="row">
+    <div class="col col-lg-12">
+    <h5 class="ml-2 mb-3 text-dark" style="letter-spacing: 0px">Comments goes here</h5>
+    <!--for sending request for sending the comment-->
+    <div class="form-group row">
+    <form method="post" name="reset-value" autocomplete="off" id="clear-value">
+    {% csrf_token %}
+
+        {{ comment_form.as_p }}
+        {% if request.user.is_authenticated %}
+             <input type = 'submit'  value="Submit" class="btn btn-success" id="clear-btn" autocomplete="">
+           {% else %}
+            <input type = 'submit' value="Submit" class="btn btn-success" title="please login first" disabled>
+        {% endif %}
+
+    </form>
+    </div>
+    <hr>
+
+    <p class="ml-2 text-dark">{{ comments.count }} Comment {{ Comments|pluralize }}</p>
+    <!--for comment display-->
+    {% for comment in comments %}
+         <blockquote class="blockquote">
+    <p class="mb-0 text-dark"><small>{{ comment.content }}</small></p>
+    <footer class="blockquote-footer text-black-50"><small>by <cite title="Source Title">{{ comment.user|capfirst }} {{ comment.timeStamp }}</cite> </small>
+      <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
+
+    </footer>
+        </blockquote>
+        <!--for reply the comment-->
+        <div class="replied-comments container mt-2" style="display: none;">
+        {% for reply in comment.replies.all %}
+             <blockquote class="blockquote">
+    <p class="mb-0 text-dark"><small>{{ reply.content }}</small></p>
+    <footer class="blockquote-footer text-black-50"><small>by <cite title="Source Title">{{ reply.user|capfirst }} {{ reply.timeStamp }}</cite></small>
+
+    </footer>
+        </blockquote>
+            {% endfor %}
+<div class="form-group row">
+<form method="post" name="reset-value" autocomplete="off" id="clear-value">
+    {% csrf_token %}
+    <input type="hidden", name="comment_id", value="{{ comment.id }}">
+     {{ comment_form.as_p }}
+        {% if request.user.is_authenticated %}
+             <input type = 'submit'  value="Submit" class="btn btn-success" id="clear-btn">
+           {% else %}
+            <input type = 'submit' value="Submit" class="btn btn-success" title="please login first" disabled>
+        {% endif %}
+</form>
+</div>
+        </div>
+    {% endfor %}
+    </div>
+    </div>
+    </div>
+   <script>
+   window.onload = function() {
+
+  var x = document.querySelectorAll('#form_id');
+  console.log('test');
+  for(var i=0;i<x.length;i++){
+  x[i].value='';
+}};
+        $('.reply-btn').click(function () {
+           $(this).parent().parent().next('.replied-comments').fadeToggle();
+        });
+  </script>
+    
+    <script type="text/javascript">
+    $(document).ready(function (event) {
+        $(document).on('click', '#like', function (event) {
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "like_post" %}',
+                data: {'post_id': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: 'json',
+                success: function (response) {
+                    $('#like_section').html(response['form'])
+
+                },
+                error: function (rs, e) {
+                    console.log(rs.responseText)
+
+                }
+
+
+
+
+            });
+        });
+
+    });
+    </script>
+{% endblock content %}

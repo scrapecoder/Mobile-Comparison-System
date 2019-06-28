@@ -1,0 +1,116 @@
+{% extends 'prodcutSearch/base_index.html' %}
+
+{% block content %}
+    {% if data_dict %}
+        <div class="container" id="section">
+        <div class="message">
+        <h3 class="ml-5" style="color: black">Smartphone price comparison.</h3>
+        <p class="ml-5" style="color: black">Find Your Dream Phone.</p>
+        </div>
+        </div>
+        <div class="container-fluid mb-5" id="section">
+        <div class="col col-lg-12">
+
+        <div class="row justify-content-center" id="container">
+
+{% for key, value in data_dict.items %}
+  {% for entry in value %}
+
+        <div class='card product_card mx-1 mb-2'>
+          <a href="{% url 'index_phone' name=key %}">
+              <div class='card-header card_header'>
+                  <div class='card-image'>
+                      <img class='filter_result_image img img-responsive' src="/media/phone_search_image/{{ key }}.jpg">
+                  </div>
+                  <div class='card-title card_title'><p><span></span>{{ key }}</p>
+              </div>
+                 </div>
+
+          <div class='card-body'>
+                    <div class='card-content card_content'>
+                        <p><span>type:</span>&nbsp;{{ entry.0 }}</p>
+                    <p><span>launch:</span>&nbsp;{{ entry.1 }}</p>
+                    <p><span>rating:</span> &nbsp;{{ entry.2 }}</p>
+                        <p><span>Display"Storage:</span>&nbsp; {{ entry.3 }}</p>
+                    <p><span>price:</span>&nbsp; {{ entry.4 }}</p>
+                  </div>
+                </div>
+        </div>
+      </a>
+
+{% endfor %}
+
+        {% endfor %}
+
+        </div>
+      <button class="filter_result btn btn-danger ml-5" onclick="find_more({{ value }})">Find More</button>
+       <div id="load" style="display: none"> <span class="loading">
+        <span></span>
+        <span></span>
+       <span></span>
+       <span></span>
+      </span>
+       </div>
+        </div>
+        </div>
+    {% endif %}
+    <script>
+     var page = 1;
+    function find_more(value){
+        page = page + 1;
+        console.log('Getting data');
+
+    $.ajax(
+        {
+            type: 'GET',
+            url: 'http://127.0.0.1:8000/under_filter/?filter_value='+value,
+            data: {'page': page},
+            beforeSend: function(){
+            $('#load').show();
+            $('.filter_result').hide();
+            },
+           complete: function(){
+           $('#load').hide();
+           $('.filter_result').show();
+           },
+            success: function (data_dict) {
+                console.log('success');
+                var dict = JSON.parse(data_dict);
+                  for (var name in dict) {
+                  for (var entry of dict[name]) {
+                      var image_name = name.toLowerCase();
+                      var image_path = "/media/phone_search_image/"+image_name+".jpg";
+                      var card = `<div class='card product_card mx-1 mb-2'>
+                  <div class='card-header card_header'>
+ <a href='http://127.0.0.1:8000/${name}'>
+<div class='card-image'><img class='filter_result_image img img-responsive' src='${image_path}'></div><div class='card-title card_title'><p><span></span>${name}</p></div>
+
+</div>
+
+<div class='card-body'>
+                    <div class='card-content card_content'>
+
+                        <p><span>type:</span>&nbsp;${entry[0]}</p>
+                    <p><span>launch:</span>&nbsp;${entry[1]}</p>
+                    <p><span>rating:</span>&nbsp;${entry[2]}</p>
+                     <p><span>Display"Storage:</span>&nbsp; ${entry[3]}</p>
+                    <p><span>price:</span> &nbsp;${entry[4]}</p>
+                  </div>
+                </div></a>`
+                    $("#container").append(card)
+                  }
+                }
+
+            },
+            error: function (data) {
+                console.log('error')
+
+            }
+        }
+    )
+    }
+</script>
+    
+
+{% endblock %}
+
